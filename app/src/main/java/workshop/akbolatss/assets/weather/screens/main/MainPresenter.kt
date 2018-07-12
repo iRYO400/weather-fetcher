@@ -24,6 +24,11 @@ class MainPresenter : MainContract.Presenter {
 
     private var mCompositeDisposable: CompositeDisposable? = null
 
+    /**
+     * Fetching autocomplete predictions
+     * @param query
+     * @param isNetworkAvailable
+     */
     override fun fetchPredictions(query: String, isNetworkAvailable: Boolean) {
         mView?.onLoading(false)
         mCompositeDisposable?.add(
@@ -51,6 +56,11 @@ class MainPresenter : MainContract.Presenter {
         )
     }
 
+    /**
+     * Fetching weather data
+     * @param predictions - autocomplete data
+     * @param isNetworkAvailable
+     */
     override fun fetchWeather(predictions: List<WeatherModel>, isNetworkAvailable: Boolean) {
         mCompositeDisposable?.add(
                 Observable.fromIterable(predictions)

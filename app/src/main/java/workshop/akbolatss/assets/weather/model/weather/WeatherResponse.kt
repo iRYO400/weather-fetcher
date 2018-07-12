@@ -1,5 +1,8 @@
 package workshop.akbolatss.assets.weather.model.weather
 
+/**
+ * Response object for https://openweathermap.org
+ */
 data class WeatherResponse(
         val dt: Int? = null,
         val coord: Coord? = null,

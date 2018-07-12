@@ -13,10 +13,6 @@ import workshop.akbolatss.assets.weather.model.CacheProvider
 import workshop.akbolatss.assets.weather.network.ApiInterface
 import java.util.concurrent.TimeUnit
 
-/**
- * Author: Akbolat Sadvakassov
- * Date: 09.07.2018
- */
 class MainApplication : Application() {
 
     companion object {
@@ -26,7 +22,6 @@ class MainApplication : Application() {
 
         const val PREFS_LAST_QUERY = "SharedLastQuery"
 
-        const val LOG_TAG = "TAG"
         lateinit var mApiInterface: ApiInterface
         lateinit var mCacheProvider: CacheProvider
     }
@@ -39,7 +34,7 @@ class MainApplication : Application() {
         val client = OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
-//                .addInterceptor(getLoggingInterceptor())
+                .addInterceptor(getLoggingInterceptor())
                 .build()
 
 
@@ -61,12 +56,12 @@ class MainApplication : Application() {
 
     private fun getLoggingInterceptor(): HttpLoggingInterceptor {
         val loggingInterceptor = HttpLoggingInterceptor()
-        if (BuildConfig.DEBUG) {
+        return if (BuildConfig.DEBUG) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-            return loggingInterceptor
+            loggingInterceptor
         } else {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
-            return loggingInterceptor
+            loggingInterceptor
         }
     }
 }

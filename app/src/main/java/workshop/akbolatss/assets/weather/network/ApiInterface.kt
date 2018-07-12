@@ -7,10 +7,7 @@ import retrofit2.http.Url
 import workshop.akbolatss.assets.weather.model.weather.WeatherResponse
 import workshop.akbolatss.assets.weather.model.prediction.PredictionResponse
 
-/**
- * Author: Akbolat Sadvakassov
- * Date: 10.07.2018
- */
+
 interface ApiInterface {
     @GET
     fun getPredictions(@Url url: String): Observable<PredictionResponse>

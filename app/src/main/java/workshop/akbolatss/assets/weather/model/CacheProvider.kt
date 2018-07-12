@@ -7,6 +7,10 @@ import io.rx_cache2.LifeCache
 import workshop.akbolatss.assets.weather.model.prediction.PredictionResponse
 import java.util.concurrent.TimeUnit
 
+/**
+ * Cache provider
+ * @see {@link https://github.com/VictorAlbertos/RxCache}
+ */
 interface CacheProvider {
 
     companion object {

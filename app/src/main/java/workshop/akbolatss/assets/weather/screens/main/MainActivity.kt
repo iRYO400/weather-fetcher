@@ -29,7 +29,9 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.OnWeatherItemListener, 
     private var mSearchSubject: BehaviorSubject<String>? = null
 
     private lateinit var mAdapter: WeatherAdapter
-
+    /**
+     * Checker for Cold-Start
+     */
     private var isColdStart = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +41,6 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.OnWeatherItemListener, 
         attachPresenter()
         initRv()
         initEditText()
-
     }
 
     private fun attachPresenter() {
@@ -56,13 +57,18 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.OnWeatherItemListener, 
         return mPresenter!!
     }
 
-
+    /**
+     * Initializing RecyclerView
+     */
     private fun initRv() {
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         mAdapter = WeatherAdapter(this)
         recyclerView.adapter = mAdapter
     }
 
+    /**
+     * Initializing EditText
+     */
     private fun initEditText() {
         mSearchSubject = BehaviorSubject.create()
 
@@ -87,10 +93,8 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.OnWeatherItemListener, 
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.toString().trim().length > 2) {
+                if (s.toString().trim().isNotEmpty()) {
                     mSearchSubject?.onNext(s.toString())
-                } else {
-                    mAdapter.onClearItems()
                 }
             }
         })
@@ -105,9 +109,12 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.OnWeatherItemListener, 
                             prefsHelper.edit().putString(PREFS_LAST_QUERY, s).apply()
                         }
                         .subscribe { s ->
-                            mPresenter!!.fetchPredictions(s, isNetworkAvailable(this))
+                            if (s.length > 2) {
+                                mPresenter!!.fetchPredictions(s, isNetworkAvailable(this))
+                            } else {
+                                mAdapter.onClearItems()
+                            }
                         }
-
             }
         }
     }
@@ -129,6 +136,9 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.OnWeatherItemListener, 
         super.onDestroy()
     }
 
+    /**
+     * Loading State manager
+     */
     override fun onLoading(isDone: Boolean) {
         if (isDone) {
             progressBar.visibility = View.GONE
@@ -139,23 +149,27 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.OnWeatherItemListener, 
         }
     }
 
+    /**
+     * Error on fetching autocomplete prediction
+     */
     override fun onErrorPrediction() {
         Toast.makeText(this, getString(R.string.error_api_prediction), Toast.LENGTH_SHORT).show()
     }
 
+    /**
+     * Error on fetching Weather info
+     */
     override fun onErrorWeather() {
         Toast.makeText(this, getString(R.string.error_api_weather), Toast.LENGTH_SHORT).show()
     }
 
     override fun onLoadItems(result: List<WeatherModel>) {
-        Log.d("TAG", "onLoadItems ${result.size}")
         mAdapter.onAddItems(result)
     }
 
     override fun onUpdateItems(result: List<WeatherModel>) {
         mAdapter.onUpdateItems(result)
     }
-
     override fun onWeatherListUpdateListener(predictions: List<WeatherModel>) {
         mPresenter!!.fetchWeather(predictions, isNetworkAvailable(this))
     }

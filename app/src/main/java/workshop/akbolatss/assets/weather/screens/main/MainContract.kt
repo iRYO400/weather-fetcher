@@ -2,10 +2,6 @@ package workshop.akbolatss.assets.weather.screens.main
 
 import workshop.akbolatss.assets.weather.model.WeatherModel
 
-/**
- * Author: Akbolat Sadvakassov
- * Date: 11.07.2018
- */
 interface MainContract {
 
     interface View {

@@ -2,6 +2,9 @@ package workshop.akbolatss.assets.weather.model.prediction
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Response object for https://maps.googleapis.com/maps/api/place/autocomplete/
+ */
 data class PredictionItem(
 
 	@field:SerializedName("reference")
