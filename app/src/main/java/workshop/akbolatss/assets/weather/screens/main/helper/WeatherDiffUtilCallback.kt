@@ -1,4 +1,4 @@
-package workshop.akbolatss.assets.weather
+package workshop.akbolatss.assets.weather.screens.main.helper
 
 import android.support.v7.util.DiffUtil
 import workshop.akbolatss.assets.weather.model.WeatherModel

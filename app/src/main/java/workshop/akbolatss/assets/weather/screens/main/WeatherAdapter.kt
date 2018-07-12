@@ -1,4 +1,4 @@
-package workshop.akbolatss.assets.weather
+package workshop.akbolatss.assets.weather.screens.main
 
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.rv_item.view.*
+import workshop.akbolatss.assets.weather.R
 import workshop.akbolatss.assets.weather.model.WeatherModel
-import workshop.akbolatss.assets.weather.model.prediction.PredictionItem
-import workshop.akbolatss.assets.weather.utils.Logger
+import workshop.akbolatss.assets.weather.screens.main.helper.WeatherDiffUtilCallback
 import java.util.*
 
 /**
@@ -38,7 +38,7 @@ class WeatherAdapter(private val mListener: OnWeatherItemListener) : RecyclerVie
         mModelList.clear()
         mModelList.addAll(predictions)
         notifyDataSetChanged()
-        mListener.onWeatherListUpdateListener(predictions)
+        mListener.onWeatherListUpdateListener(predictions)//Запросы для получения текущей температуры по загруженным городам
     }
 
     fun onUpdateItems(predictions: List<WeatherModel>) {
@@ -71,12 +71,16 @@ class WeatherAdapter(private val mListener: OnWeatherItemListener) : RecyclerVie
             if (weatherModel.weatherResponse == null) {
                 itemView.progressBar.visibility = View.VISIBLE
                 itemView.tvValue.visibility = View.GONE
-                Log.d("TAG", "weatherResponse is null")
-            } else if (weatherModel.weatherResponse.cod == 404) {
+            } else if (weatherModel.weatherResponse.cod == 403) { // Скорее всего превышено количество запросов в минуту( free plan)
+                itemView.progressBar.visibility = View.GONE
+                itemView.tvValue.text = "-"
+            } else if (weatherModel.weatherResponse.cod == 404) { // Не существует
+                itemView.progressBar.visibility = View.GONE
+                itemView.tvValue.text = "-"
+            } else if (weatherModel.weatherResponse.cod == 500) { // Не работает
                 itemView.progressBar.visibility = View.GONE
                 itemView.tvValue.text = "-"
             } else {
-                Log.d("TAG", "weatherResponse is not null")
                 itemView.progressBar.visibility = View.GONE
                 itemView.tvValue.visibility = View.VISIBLE
                 itemView.tvDescription.text = weatherModel.prediction.id

@@ -1,4 +1,4 @@
-package workshop.akbolatss.assets.weather.model
+package workshop.akbolatss.assets.weather.model.weather
 
 data class WeatherResponse(
         val dt: Int? = null,

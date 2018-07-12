@@ -1,11 +1,10 @@
 package workshop.akbolatss.assets.weather.network
 
 import io.reactivex.Observable
-import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.Url
-import workshop.akbolatss.assets.weather.model.WeatherResponse
+import workshop.akbolatss.assets.weather.model.weather.WeatherResponse
 import workshop.akbolatss.assets.weather.model.prediction.PredictionResponse
 
 /**

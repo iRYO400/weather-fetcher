@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WeatherFetcher</string>
+    <string name="error_api_prediction">Произошка ошибка при автозаполнении, попробуйте позже</string>
+    <string name="error_api_weather">Произошла ошибка при запросе данных о погоде, попробуйте позже</string>
 </resources>
