@@ -21,7 +21,7 @@ Design inspired by https://dribbble.com/shots/4172597-Weather-App
 
 * RxJava 2 https://github.com/ReactiveX/RxJava
 * Retrofit 2 https://github.com/square/retrofit
-* RxCache  https://github.com/orhanobut/hawk
+* RxCache  https://github.com/VictorAlbertos/RxCache
 
 <a name="license" />
 
