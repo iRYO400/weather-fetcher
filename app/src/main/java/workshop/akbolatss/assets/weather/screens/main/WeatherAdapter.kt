@@ -3,6 +3,7 @@ package workshop.akbolatss.assets.weather.screens.main
 import android.support.v4.content.ContextCompat
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,9 +19,13 @@ class WeatherAdapter(private val mListener: OnWeatherItemListener) : RecyclerVie
 
     private val mModelList: MutableList<WeatherModel> = ArrayList()
 
+    private var mLandscape: Boolean = false
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PredictionViewHolder {
         val mLayoutInflater = LayoutInflater.from(parent.context)
-        val view = mLayoutInflater.inflate(R.layout.rv_item, parent, false)
+        val view =
+                if (viewType == 0) mLayoutInflater.inflate(R.layout.rv_item, parent, false)
+                else mLayoutInflater.inflate(R.layout.rv_item_square, parent, false)
         return PredictionViewHolder(view!!)
     }
 
@@ -31,6 +36,14 @@ class WeatherAdapter(private val mListener: OnWeatherItemListener) : RecyclerVie
 
     override fun getItemCount(): Int {
         return mModelList.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (!mLandscape) {
+            0
+        } else {
+            1
+        }
     }
 
     /**
@@ -59,6 +72,11 @@ class WeatherAdapter(private val mListener: OnWeatherItemListener) : RecyclerVie
      */
     fun onClearItems() {
         mModelList.clear()
+        notifyDataSetChanged()
+    }
+
+    fun onRefreshView(landscape: Boolean) {
+        mLandscape = landscape
         notifyDataSetChanged()
     }
 
@@ -117,6 +135,8 @@ class WeatherAdapter(private val mListener: OnWeatherItemListener) : RecyclerVie
                 itemView.clBackground.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_gradient_snow)
             } else if (type == "50d" || type == "50n") {
                 itemView.clBackground.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_gradient_mist)
+            } else {
+                itemView.clBackground.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_gradient_empty)
             }
         }
     }

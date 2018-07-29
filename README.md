@@ -1,7 +1,11 @@
 ## Weather Fetcher ##
 It is a test project for job apply.
 Design inspired by https://dribbble.com/shots/4172597-Weather-App
-(only plain views, later Grid edition)
+(only plain views for portrait orientation, grid for landscape)
+
+<p align="center">
+  <img src="showcase/showCase.gif" align="center">
+ </p>
 
 <a name="overview" />
 

@@ -1,12 +1,13 @@
 package workshop.akbolatss.assets.weather.screens.main
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -19,6 +20,7 @@ import workshop.akbolatss.assets.weather.R
 import workshop.akbolatss.assets.weather.application.MainApplication.Companion.PREFS_LAST_QUERY
 import workshop.akbolatss.assets.weather.model.WeatherModel
 import workshop.akbolatss.assets.weather.utils.PreferenceHelper
+import workshop.akbolatss.assets.weather.utils.UtilMethods
 import workshop.akbolatss.assets.weather.utils.UtilMethods.isNetworkAvailable
 import java.util.concurrent.TimeUnit
 
@@ -27,6 +29,8 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.OnWeatherItemListener, 
     private var mPresenter: MainContract.Presenter? = null
 
     private var mSearchSubject: BehaviorSubject<String>? = null
+
+    private var isLandscape = false
 
     private lateinit var mAdapter: WeatherAdapter
     /**
@@ -39,7 +43,7 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.OnWeatherItemListener, 
         setContentView(R.layout.activity_main)
 
         attachPresenter()
-        initRv()
+        initRv(false)
         initEditText()
     }
 
@@ -57,13 +61,25 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.OnWeatherItemListener, 
         return mPresenter!!
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        isLandscape = UtilMethods.isLandscapeOrientation(newConfig!!)
+        initRv(true)
+    }
+
     /**
      * Initializing RecyclerView
      */
-    private fun initRv() {
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        mAdapter = WeatherAdapter(this)
-        recyclerView.adapter = mAdapter
+    private fun initRv(isRefreshing: Boolean) {
+        recyclerView.layoutManager =
+                if (!isLandscape) LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                else GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false)
+        if (!isRefreshing) {
+            mAdapter = WeatherAdapter(this)
+            recyclerView.adapter = mAdapter
+        } else {
+            mAdapter.onRefreshView(isLandscape)
+        }
     }
 
     /**
@@ -140,13 +156,13 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.OnWeatherItemListener, 
      * Loading State manager
      */
     override fun onLoading(isDone: Boolean) {
-        if (isDone) {
-            progressBar.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
-        } else {
-            progressBar.visibility = View.VISIBLE
-            recyclerView.visibility = View.GONE
-        }
+//        if (isDone) {
+//            progressBar.visibility = View.GONE
+//            recyclerView.visibility = View.VISIBLE
+//        } else {
+//            progressBar.visibility = View.VISIBLE
+//            recyclerView.visibility = View.GONE
+//        }
     }
 
     /**
@@ -170,7 +186,9 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.OnWeatherItemListener, 
     override fun onUpdateItems(result: List<WeatherModel>) {
         mAdapter.onUpdateItems(result)
     }
+
     override fun onWeatherListUpdateListener(predictions: List<WeatherModel>) {
         mPresenter!!.fetchWeather(predictions, isNetworkAvailable(this))
     }
+
 }
